@@ -1,3 +1,28 @@
 ---
-# tasks file for VMWare
- - include_tasks: vm.yaml
+- name: Install requests python package
+  pip:
+    name: requests
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  delegate_to: localhost
+
+- name:  Clone a virtual machine from Linux template and customize
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: no
+    datacenter: office-msk
+    state: present
+    folder: /INFRA/TEST
+    template: ubuntu-20-terraform-template
+    name: "{{ vm_name }}"
+    cluster: office-horizon-test
+    networks:
+      - name: "{{ vm_network }}"
+        ip: "{{ vm_ip }}"
+        netmask: 255.255.255.0
+    wait_for_ip_address: True
+    customization:
+      dns_servers: "{{ vm_dns }}"
+  delegate_to: localhost
