@@ -1,0 +1,8 @@
+---
+
+- name: Install
+  hosts: "{{ SERVER_NAME }}"
+  become: yes
+  remote_user: master
+  roles:
+   - { role: vmware}
